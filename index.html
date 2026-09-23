@@ -1,1 +1,411 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Retro - Workspace</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-color: #008080; /* Teal klasik Windows 95 */
+            --window-bg: #c0c0c0;
+            --window-border-light: #ffffff;
+            --window-border-dark: #808080;
+            --window-border-darker: #000000;
+            --header-bg: #000080;
+            --header-text: #ffffff;
+            --text-color: #000000;
+            --accent-yellow: #ffff00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace; /* Font gaya retro */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+        }
+
+        /* Scanline Overlay untuk Efek Layar CRT */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.15) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        /* Desktop Container */
+        .desktop {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Retro Window Container (Efek Bevel 3D Klasik) */
+        .window {
+            background-color: var(--window-bg);
+            border-top: 2px solid var(--window-border-light);
+            border-left: 2px solid var(--window-border-light);
+            border-right: 2px solid var(--window-border-darker);
+            border-bottom: 2px solid var(--window-border-darker);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .window-header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 4px 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .window-controls button {
+            width: 16px;
+            height: 14px;
+            font-size: 9px;
+            line-height: 10px;
+            background-color: var(--window-bg);
+            border-top: 1px solid var(--window-border-light);
+            border-left: 1px solid var(--window-border-light);
+            border-right: 1px solid var(--window-border-darker);
+            border-bottom: 1px solid var(--window-border-darker);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .window-body {
+            padding: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Input / Inset Frame (Efek Kotak Masuk Kedalam) */
+        .inset-box {
+            background-color: #ffffff;
+            border-top: 2px solid var(--window-border-dark);
+            border-left: 2px solid var(--window-border-dark);
+            border-right: 2px solid var(--window-border-light);
+            border-bottom: 2px solid var(--window-border-light);
+            padding: 10px;
+            margin-top: 8px;
+        }
+
+        /* Retro Button */
+        .btn-retro {
+            background-color: var(--window-bg);
+            border-top: 2px solid var(--window-border-light);
+            border-left: 2px solid var(--window-border-light);
+            border-right: 2px solid var(--window-border-darker);
+            border-bottom: 2px solid var(--window-border-darker);
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn-retro:active {
+            border-top: 2px solid var(--window-border-darker);
+            border-left: 2px solid var(--window-border-darker);
+            border-right: 2px solid var(--window-border-light);
+            border-bottom: 2px solid var(--window-border-light);
+            padding: 7px 11px 5px 13px;
+        }
+
+        /* Project Cards */
+        .project-card {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--window-border-dark);
+        }
+
+        .project-card:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .tech-tag {
+            background-color: #000080;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 4px;
+            margin-right: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Skill Bar Retro */
+        .skill-item {
+            margin-bottom: 8px;
+        }
+        .skill-bar-container {
+            height: 12px;
+            background-color: #e0e0e0;
+            border: 1px solid var(--window-border-dark);
+            margin-top: 2px;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background-color: #000080;
+            width: 0%;
+            transition: width 0.8s ease-in-out;
+        }
+
+        /* Form Inputs */
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            border: 2px solid var(--window-border-dark);
+            padding: 5px;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            font-family: inherit;
+            background-color: #fff;
+        }
+
+        /* Bottom Taskbar */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background-color: var(--window-bg);
+            border-top: 2px solid var(--window-border-light);
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            z-index: 1000;
+        }
+
+        .start-btn {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 28px;
+            padding: 0 8px;
+        }
+
+        .clock {
+            margin-left: auto;
+            border-top: 1px solid var(--window-border-dark);
+            border-left: 1px solid var(--window-border-dark);
+            border-right: 1px solid var(--window-border-light);
+            border-bottom: 1px solid var(--window-border-light);
+            padding: 2px 8px;
+            font-size: 11px;
+            background-color: var(--window-bg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CRT Scanline Effect -->
+    <div class="scanline"></div>
+
+    <!-- Main Desktop Layout -->
+    <div class="desktop">
+
+        <!-- Window 1: Profile / Bio -->
+        <div class="window" id="win-about">
+            <div class="window-header">
+                <span>C:\PORTFOLIO\ABOUT.TXT</span>
+                <div class="window-controls">
+                    <button onclick="playClickSound()">_</button>
+                    <button onclick="playClickSound()">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <h3>Halo, Selamat Datang!</h3>
+                <div class="inset-box">
+                    <p><strong>Nama:</strong> Alex Developer</p>
+                    <p><strong>Peran:</strong> Web & UI Designer</p>
+                    <p><strong>Status:</strong> Siap Menerima Proyek Baru</p>
+                </div>
+                <p style="margin-top: 10px;">
+                    Saya berfokus pada pembuatan antarmuka web yang unik, interaktif, dan berkesan dengan estetika klasik.
+                </p>
+                <a href="#win-contact" class="btn-retro" onclick="playClickSound()">> Kirim Pesan</a>
+            </div>
+        </div>
+
+        <!-- Window 2: Featured Projects -->
+        <div class="window" id="win-projects">
+            <div class="window-header">
+                <span>C:\PORTFOLIO\PROJECTS.EXE</span>
+                <div class="window-controls">
+                    <button onclick="playClickSound()">_</button>
+                    <button onclick="playClickSound()">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <!-- Project 1 -->
+                <div class="project-card">
+                    <h4>1. E-Commerce Retro</h4>
+                    <p>Toko online dengan nuansa web tahun 90-an namun dengan sistem pembayaran modern.</p>
+                    <span class="tech-tag">HTML</span>
+                    <span class="tech-tag">CSS</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <br>
+                    <button class="btn-retro" onclick="alert('Membuka Demo Proyek 1...')">Live Demo</button>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card">
+                    <h4>2. Pixel Art Generator</h4>
+                    <p>Aplikasi berbasis kanvas untuk membuat gambar piksel secara langsung di browser.</p>
+                    <span class="tech-tag">Canvas API</span>
+                    <span class="tech-tag">JS</span>
+                    <br>
+                    <button class="btn-retro" onclick="alert('Membuka Demo Proyek 2...')">Live Demo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Window 3: Skills -->
+        <div class="window" id="win-skills">
+            <div class="window-header">
+                <span>C:\PORTFOLIO\SKILLS.DAT</span>
+                <div class="window-controls">
+                    <button onclick="playClickSound()">_</button>
+                    <button onclick="playClickSound()">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-bottom: 10px;">Tingkat Keahlian Teknis:</p>
+                <div class="inset-box">
+                    <div class="skill-item">
+                        <span>HTML/CSS</span>
+                        <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span>JavaScript</span>
+                        <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 80%;"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span>UI/UX Design</span>
+                        <div class="skill-bar-container"><div class="skill-bar-fill" style="width: 75%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Window 4: Contact Form -->
+        <div class="window" id="win-contact">
+            <div class="window-header">
+                <span>C:\PORTFOLIO\CONTACT.LOG</span>
+                <div class="window-controls">
+                    <button onclick="playClickSound()">_</button>
+                    <button onclick="playClickSound()">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                    <label>Nama Anda:</label>
+                    <input type="text" id="name" required placeholder="Ketik nama...">
+
+                    <label>Email:</label>
+                    <input type="email" id="email" required placeholder="nama@email.com">
+
+                    <label>Pesan:</label>
+                    <textarea id="message" rows="3" required placeholder="Tulis pesan..."></textarea>
+
+                    <button type="submit" class="btn-retro">Kirim Data</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Taskbar Klasik -->
+    <div class="taskbar">
+        <button class="btn-retro start-btn" onclick="toggleStartMenu()">
+            💾 <strong>Start</strong>
+        </button>
+        <div class="clock" id="digitalClock">00:00:00 AM</div>
+    </div>
+
+    <!-- --- JAVASCRIPT --- -->
+    <script>
+        // 1. Jam Digital di Taskbar
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('digitalClock').innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Efek Suara Klik Sederhana (Web Audio API)
+        function playClickSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.05);
+
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {
+                // Mengabaikan jika audio tidak didukung
+            }
+        }
+
+        // 3. Handling Submit Form
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            playClickSound();
+            
+            const name = document.getElementById('name').value;
+            alert(`Terima kasih, ${name}! Pesan Anda telah terkirim.`);
+            document.getElementById('contactForm').reset();
+        }
+
+        // 4. Start Button Action
+        function toggleStartMenu() {
+            playClickSound();
+            alert("Portofolio OS v1.0\nDibuat dengan HTML, CSS, dan JavaScript.");
+        }
+    </script>
+</body>
+</html>
