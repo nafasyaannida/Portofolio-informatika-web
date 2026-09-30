@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -116,6 +115,40 @@
             border-bottom: 2px solid var(--window-border-light);
             padding: 10px;
             margin-top: 8px;
+        }
+
+        /* Frame Foto Retro */
+        .profile-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-frame {
+            width: 90px;
+            height: 90px;
+            min-width: 90px;
+            background-color: #e0e0e0;
+            border-top: 2px solid var(--window-border-dark);
+            border-left: 2px solid var(--window-border-dark);
+            border-right: 2px solid var(--window-border-light);
+            border-bottom: 2px solid var(--window-border-light);
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .profile-info {
+            flex: 1;
         }
 
         /* Retro Button */
@@ -248,10 +281,17 @@
             </div>
             <div class="window-body">
                 <h3>Halo, Selamat Datang!</h3>
-                <div class="inset-box">
-                    <p><strong>Nama:</strong> Alex Developer</p>
-                    <p><strong>Peran:</strong> Web & UI Designer</p>
-                    <p><strong>Status:</strong> Siap Menerima Proyek Baru</p>
+                <div class="inset-box profile-container">
+                    <!-- Frame Foto Retro -->
+                    <div class="profile-frame">
+                        <img src="https://via.placeholder.com/150" alt="Foto Profil" id="profileImage">
+                    </div>
+                    <!-- Informasi Biodata -->
+                    <div class="profile-info">
+                        <p><strong>Nama:</strong> Alex Developer</p>
+                        <p><strong>Peran:</strong> Web & UI Designer</p>
+                        <p><strong>Status:</strong> Siap Proyek Baru</p>
+                    </div>
                 </div>
                 <p style="margin-top: 10px;">
                     Saya berfokus pada pembuatan antarmuka web yang unik, interaktif, dan berkesan dengan estetika klasik.
